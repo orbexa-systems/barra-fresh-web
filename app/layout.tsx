@@ -90,14 +90,14 @@ export default function RootLayout({
     description:
       'Ensaladas frescas, jugos naturales, licuados nutritivos y yogurt preparado en Cuernavaca, Morelos.',
     url: BASE_URL,
-    telephone: '+527771234567',
+    telephone: '+525613013325',
     email: 'contacto@barrafresh.mx',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Av. Saludable 123, Col. Centro',
-      addressLocality: 'Cuernavaca',
-      addressRegion: 'Morelos',
-      postalCode: '62000',
+      streetAddress: 'Calle Lirio 20, Col. Lomas de San Miguel',
+      addressLocality: 'Atizapán de Zaragoza',
+      addressRegion: 'Estado de México',
+      postalCode: '52928',
       addressCountry: 'MX',
     },
     geo: {

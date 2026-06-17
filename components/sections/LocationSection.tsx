@@ -128,33 +128,18 @@ export function LocationSection() {
             </div>
           </div>
 
-          {/* Map Placeholder — ready for Google Maps embed */}
-          <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 h-full min-h-[400px] flex flex-col">
-            <div className="bg-gray-100 flex-1 flex flex-col items-center justify-center gap-4 p-8 text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-3xl" aria-hidden="true">
-                📍
-              </div>
-              <div>
-                <p className="font-bold text-gray-900 mb-1">
-                  {BUSINESS_INFO.address}
-                </p>
-                <p className="text-gray-500 text-sm">{BUSINESS_INFO.city}</p>
-              </div>
-              <p className="text-xs text-gray-400 max-w-xs">
-                Integra tu iframe de Google Maps aquí. Reemplaza este bloque con el
-                código de inserción de tu ubicación.
-              </p>
-              <a
-                href={mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
-                aria-label="Ver ubicación en Google Maps"
-              >
-                <span aria-hidden="true">🗺️</span>
-                Ver en Google Maps
-              </a>
-            </div>
+          {/* Google Maps embed */}
+          <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 h-full min-h-[400px]">
+            <iframe
+              src="https://maps.google.com/maps?q=Calle+Lirio+20,+Lomas+de+San+Miguel,+Atizap%C3%A1n+de+Zaragoza,+Estado+de+M%C3%A9xico,+52928&output=embed&z=16"
+              width="100%"
+              height="100%"
+              style={{ border: 0, minHeight: '400px' }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Ubicación BarraFresh"
+            />
           </div>
         </div>
       </div>

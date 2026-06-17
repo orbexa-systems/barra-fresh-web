@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { PRODUCTS, CATEGORIES } from '@/lib/data'
-import { buildOrderUrl } from '@/lib/whatsapp'
+import { buildOrderUrl, buildWhatsAppUrl } from '@/lib/whatsapp'
 import { formatPrice } from '@/lib/utils'
 import type { ProductCategory } from '@/types'
 
@@ -132,7 +132,7 @@ export function MenuSection() {
         {/* CTA */}
         <div className="text-center mt-12">
           <a
-            href="https://wa.me/527771234567?text=Hola%20BarraFresh%2C%20me%20gustar%C3%ADa%20ver%20el%20men%C3%BA%20completo."
+            href={buildWhatsAppUrl('Hola BarraFresh, me gustaría ver el menú completo.')}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold text-lg transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"

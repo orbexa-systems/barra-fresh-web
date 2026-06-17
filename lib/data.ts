@@ -14,8 +14,8 @@ export const BUSINESS_INFO: BusinessInfo = {
   phone: '+525613013325',
   whatsapp: '525613013325',
   email: 'contacto@barrafresh.mx',
-  address: 'Av. Saludable 123, Col. Centro',
-  city: 'Cuernavaca, Morelos',
+  address: 'Calle Lirio 20, Col. Lomas de San Miguel',
+  city: 'Atizapán de Zaragoza, Estado de México, CP 52928',
   schedule: [
     { days: 'Lunes – Viernes', hours: '7:00 am – 8:00 pm' },
     { days: 'Sábado', hours: '8:00 am – 6:00 pm' },
