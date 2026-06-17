@@ -11,8 +11,8 @@ import type {
 export const BUSINESS_INFO: BusinessInfo = {
   name: 'BarraFresh',
   tagline: 'Alimentación saludable para tu día',
-  phone: '+527771234567',
-  whatsapp: '527771234567',
+  phone: '+525613013325',
+  whatsapp: '525613013325',
   email: 'contacto@barrafresh.mx',
   address: 'Av. Saludable 123, Col. Centro',
   city: 'Cuernavaca, Morelos',
