@@ -4,7 +4,7 @@
 
 Landing page + menú digital para **BarraFresh**, negocio de comida saludable (ensaladas, jugos, licuados, smoothies, yogurt, snacks).
 
-**Stack:** Next.js 16 (App Router) · TypeScript · Tailwind CSS v4 · Sin base de datos (datos en archivo estático)
+**Stack:** Next.js 15 (App Router) · TypeScript · Tailwind CSS v4 · Sin base de datos (datos en archivo estático)
 
 **Ejecutar:**
 ```bash
@@ -24,20 +24,24 @@ barra_fresh_proyecto/
 │   ├── page.tsx            # Página principal: composición de todas las secciones
 │   ├── globals.css         # Tailwind v4 import, scroll suave, focus styles
 │   ├── sitemap.ts          # Sitemap automático (Next.js MetadataRoute)
-│   └── robots.ts           # Robots.txt con reglas
+│   ├── robots.ts           # Robots.txt con reglas
+│   └── menu/
+│       └── page.tsx        # Menú digital independiente — URL para QR físico
 │
 ├── components/
 │   ├── layout/
 │   │   ├── Header.tsx      # Header sticky, scroll-aware, menú móvil animado
 │   │   └── Footer.tsx      # Logo, nav, horarios, contacto, redes sociales
+│   ├── menu/
+│   │   └── MenuClient.tsx  # Lógica compartida: filtros + grid ('use client')
 │   ├── sections/
 │   │   ├── HeroSection.tsx         # Hero con grid de imágenes, stats, CTAs
 │   │   ├── BenefitsSection.tsx     # 4 tarjetas de beneficios con hover
-│   │   ├── MenuSection.tsx         # Menú filtrable por categoría ('use client')
+│   │   ├── MenuSection.tsx         # Wrapper de MenuClient para la landing (#menu)
 │   │   ├── GallerySection.tsx      # Galería masonry con lazy loading
 │   │   ├── TestimonialsSection.tsx # 6 testimonios sobre fondo verde
 │   │   ├── OrderSection.tsx        # CTA de pedido por WhatsApp
-│   │   └── LocationSection.tsx     # Dirección, horarios, placeholder Maps
+│   │   └── LocationSection.tsx     # Dirección, horarios, Google Maps embed
 │   └── ui/
 │       ├── Button.tsx              # 5 variantes, 3 tamaños, soporte href/anchor
 │       ├── WhatsAppButton.tsx      # Botón inline + botón flotante (FAB)
@@ -70,11 +74,11 @@ Todo está centralizado en **`lib/data.ts`**. Nunca hay datos hardcodeados en co
 // lib/data.ts
 export const BUSINESS_INFO: BusinessInfo = {
   name: 'BarraFresh',
-  phone: '+527771234567',       // ← cambiar al real
-  whatsapp: '527771234567',     // ← sin + ni espacios
+  phone: '+525613013325',
+  whatsapp: '525613013325',
   email: 'contacto@barrafresh.mx',
-  address: 'Av. Saludable 123, Col. Centro',
-  city: 'Cuernavaca, Morelos',
+  address: 'Calle Lirio 20, Col. Lomas de San Miguel',
+  city: 'Atizapán de Zaragoza, Estado de México, CP 52928',
   schedule: [...],
   socialMedia: {
     instagram: 'https://instagram.com/barrafresh',
@@ -205,14 +209,35 @@ Actualmente todas vienen de **Unsplash** (configurado en `next.config.ts`). Para
 
 ---
 
+## Rutas del sitio
+
+| Ruta | Descripción |
+|---|---|
+| `/` | Landing page completa |
+| `/menu` | Menú digital independiente — usar esta URL para el QR físico |
+| `/sitemap.xml` | Sitemap generado automáticamente |
+| `/robots.txt` | Robots generado automáticamente |
+
+---
+
 ## Checklist antes de lanzar
 
-- [ ] Actualizar `BUSINESS_INFO` en `lib/data.ts` con datos reales
-- [ ] Crear/agregar `.env.local` con `NEXT_PUBLIC_BASE_URL`
-- [ ] Agregar `public/og-image.jpg`, `public/favicon.ico`, `public/apple-touch-icon.png`
-- [ ] Integrar iframe real de Google Maps en `LocationSection.tsx`
-- [ ] Cambiar imágenes de Unsplash por fotos propias
-- [ ] Actualizar coordenadas GPS en JSON-LD (`app/layout.tsx`)
-- [ ] Actualizar `aggregateRating` con datos reales cuando haya reseñas
+### ✅ Completado
+- [x] `BUSINESS_INFO` actualizado con datos reales (teléfono, dirección)
+- [x] Google Maps embed integrado en `LocationSection.tsx`
+- [x] Ruta `/menu` independiente lista para QR físico
+- [x] Deploy en Vercel configurado con CI/CD automático desde GitHub
+- [x] Todos los botones de WhatsApp usan el número real (sin placeholders)
+
+### ⏳ Pendiente
+- [ ] Agregar `public/favicon.ico` — ícono de la pestaña del navegador
+- [ ] Agregar `public/apple-touch-icon.png` (180×180px) — ícono al guardar en iPhone
+- [ ] Agregar `public/og-image.jpg` (1200×630px) — imagen al compartir en WhatsApp/redes sociales
+- [ ] Crear `.env.local` con `NEXT_PUBLIC_BASE_URL=https://barrafresh-web.vercel.app`
+- [ ] Cambiar imágenes de Unsplash por fotos propias del negocio
+- [ ] Actualizar `aggregateRating` en `app/layout.tsx` con reseñas reales
+- [ ] Actualizar coordenadas GPS en JSON-LD (`app/layout.tsx` — campo `geo`)
+- [ ] Actualizar email real en `BUSINESS_INFO` (`contacto@barrafresh.mx`)
+- [ ] Actualizar redes sociales reales en `BUSINESS_INFO.socialMedia`
 - [ ] Registrar negocio en Google Business Profile para SEO local
-- [ ] Configurar dominio y deploy (Vercel recomendado para Next.js)
+- [ ] Configurar dominio propio (cambiar `NEXT_PUBLIC_BASE_URL` en Vercel)
