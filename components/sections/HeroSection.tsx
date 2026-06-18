@@ -78,6 +78,10 @@ export function HeroSection() {
                 <span aria-hidden="true">🍽️</span>
                 Ver Menú
               </Button>
+              <Button href="/menu" variant="outline" size="lg">
+                <span aria-hidden="true">📋</span>
+                Menú Digital
+              </Button>
               <WhatsAppButton
                 label="Ordenar por WhatsApp"
                 size="lg"
