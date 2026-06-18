@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { WhatsAppButton } from '@/components/ui/WhatsAppButton'
 import { Button } from '@/components/ui/Button'
+import { BUSINESS_INFO } from '@/lib/data'
 
 export function HeroSection() {
   return (
@@ -24,7 +25,7 @@ export function HeroSection() {
           <div className="text-center lg:text-left">
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold mb-6">
               <span aria-hidden="true">🌿</span>
-              Comida saludable en {'{'}ciudad{'}'}
+              Comida saludable en {BUSINESS_INFO.city.split(',')[0]}
             </span>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
