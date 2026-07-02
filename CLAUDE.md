@@ -20,17 +20,19 @@
 - Commits atómicos con mensaje descriptivo en español o inglés consistente con el historial
 
 ### Al terminar los cambios locales
-3. Push de la rama:
+3. Push de la rama y crear PR apuntando a **`develop`** automáticamente:
    ```
    git push -u origin <rama>
+   gh pr create --base develop ...
    ```
-4. Crear PR apuntando a **`develop`** (nunca directo a master)
-   - Título claro, descripción con qué cambia y por qué
-   - Esperar aprobación antes de mergear
+4. **SIEMPRE preguntar al usuario antes de mergear el PR a `develop`.**
+   No mergear sin confirmación explícita, incluso si el CI pasa.
 
-### Después de merge a develop (stage)
-5. Verificar que el deploy en Vercel staging terminó sin errores
-6. Una vez validado en staging, crear PR de `develop` → `master` para producción
+### Después de confirmar merge a develop (stage)
+5. Mergear a `develop` → Vercel despliega en staging automáticamente
+6. **SIEMPRE preguntar al usuario antes de crear el PR de `develop` → `master`.**
+7. **SIEMPRE preguntar al usuario antes de mergear ese PR a `master`.**
+   El usuario puede querer dejar cambios solo en staging sin promover a prod.
 
 ### Ambientes
 - `master` → producción (barrafresh-web.vercel.app)
