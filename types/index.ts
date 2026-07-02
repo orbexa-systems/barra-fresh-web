@@ -74,3 +74,16 @@ export interface NavItem {
   label: string
   href: string
 }
+
+export interface SaladSize {
+  id: string
+  label: string
+  price: number
+  maxToppings: number
+}
+
+export interface SaladSpecialTopping {
+  id: string
+  label: string
+  price: number
+}

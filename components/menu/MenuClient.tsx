@@ -5,13 +5,18 @@ import Image from 'next/image'
 import { PRODUCTS, CATEGORIES } from '@/lib/data'
 import { buildOrderUrl, buildWhatsAppUrl } from '@/lib/whatsapp'
 import { formatPrice } from '@/lib/utils'
+import { SaladConfigurator } from '@/components/menu/SaladConfigurator'
 
 export function MenuClient() {
   const [activeCategory, setActiveCategory] = useState<string>('all')
 
+  const showSalads = activeCategory === 'all' || activeCategory === 'ensaladas'
+
   const filteredProducts =
     activeCategory === 'all'
-      ? PRODUCTS
+      ? PRODUCTS.filter(p => p.category !== 'ensaladas')
+      : activeCategory === 'ensaladas'
+      ? []
       : PRODUCTS.filter((p) => p.category === activeCategory)
 
   return (
@@ -45,6 +50,7 @@ export function MenuClient() {
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {showSalads && <SaladConfigurator />}
         {filteredProducts.map((product) => (
           <article
             key={product.id}
