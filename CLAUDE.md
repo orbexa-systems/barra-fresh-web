@@ -34,6 +34,11 @@
 7. **SIEMPRE preguntar al usuario antes de mergear ese PR a `master`.**
    El usuario puede querer dejar cambios solo en staging sin promover a prod.
 
+### Reglas críticas sobre merge
+- Al mergear una rama feature/fix a `develop`: usar `--delete-branch` (la rama feature se puede borrar)
+- Al mergear `develop` a `master`: **NUNCA usar `--delete-branch`** — borraría `develop` del remoto
+- Si `develop` desaparece del remoto: `git checkout develop && git push origin develop` para recrearla
+
 ### Ambientes
 - `master` → producción (barrafresh-web.vercel.app)
 - `develop` → staging (barrafresh-stage.vercel.app)
