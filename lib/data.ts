@@ -84,7 +84,6 @@ export const SALAD_SIZES: SaladSize[] = [
 ]
 
 export const SALAD_TOPPINGS: string[] = [
-  'Lechuga mixta',
   'Espinaca baby',
   'Jitomate cherry',
   'Pepino',
@@ -96,6 +95,14 @@ export const SALAD_TOPPINGS: string[] = [
   'Brócoli',
   'Champiñones',
   'Germinados',
+]
+
+export const SALAD_DRESSINGS: string[] = [
+  'César',
+  'Vinagreta',
+  'Ranch',
+  'Miel Mostaza',
+  'Queso Parmesano',
 ]
 
 export const SALAD_SPECIAL_TOPPINGS: SaladSpecialTopping[] = [

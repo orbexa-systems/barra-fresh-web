@@ -87,3 +87,10 @@ export interface SaladSpecialTopping {
   label: string
   price: number
 }
+
+export interface CartItem {
+  cartId: string
+  name: string
+  price: number
+  detail?: string
+}

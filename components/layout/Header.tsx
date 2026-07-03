@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { NAV_ITEMS, BUSINESS_INFO } from '@/lib/data'
@@ -29,14 +29,14 @@ export function Header() {
           {/* Logo */}
           <a
             href="#inicio"
-            className="flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 rounded-lg"
+            className="flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-light rounded-lg"
             aria-label="BarraFresh - Ir al inicio"
           >
-            <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-sm">
+            <div className="w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center text-white font-bold text-lg shadow-sm">
               BF
             </div>
             <span className="text-xl font-bold text-gray-900">
-              Barra<span className="text-green-600">Fresh</span>
+              Barra<span className="text-brand-primary">Fresh</span>
             </span>
           </a>
 
@@ -46,7 +46,7 @@ export function Header() {
               <a
                 key={item.href}
                 href={item.href}
-                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
+                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-brand-primary hover:bg-brand-surface rounded-lg transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-light"
               >
                 {item.label}
               </a>
@@ -71,7 +71,7 @@ export function Header() {
 
           {/* Hamburger */}
           <button
-            className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
+            className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-light"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
@@ -106,7 +106,7 @@ export function Header() {
               key={item.href}
               href={item.href}
               onClick={closeMenu}
-              className="px-4 py-3 text-base font-medium text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200"
+              className="px-4 py-3 text-base font-medium text-gray-700 hover:text-brand-primary hover:bg-brand-surface rounded-lg transition-colors duration-200"
             >
               {item.label}
             </a>

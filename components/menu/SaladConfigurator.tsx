@@ -1,20 +1,18 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
-import { SALAD_SIZES, SALAD_TOPPINGS, SALAD_SPECIAL_TOPPINGS } from '@/lib/data'
-import { buildWhatsAppUrl } from '@/lib/whatsapp'
+import Image from 'next/image'
+import { SALAD_SIZES, SALAD_TOPPINGS, SALAD_DRESSINGS, SALAD_SPECIAL_TOPPINGS } from '@/lib/data'
 import { formatPrice } from '@/lib/utils'
-
-const WHATSAPP_ICON = (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4" aria-hidden="true">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-  </svg>
-)
+import { useCart } from '@/components/menu/CartContext'
 
 export function SaladConfigurator() {
+  const { addItem } = useCart()
   const [selectedSizeId, setSelectedSizeId] = useState<string | null>(null)
   const [selectedToppings, setSelectedToppings] = useState<string[]>([])
+  const [selectedDressing, setSelectedDressing] = useState<string | null>(null)
   const [selectedSpecials, setSelectedSpecials] = useState<string[]>([])
+  const [justAdded, setJustAdded] = useState(false)
 
   const size = SALAD_SIZES.find(s => s.id === selectedSizeId) ?? null
 
@@ -47,34 +45,39 @@ export function SaladConfigurator() {
     )
   }
 
-  function buildOrderMessage(): string {
-    const lines = [
-      'Hola BarraFresh 🥗 Quiero ordenar:',
-      '',
-      `Ensalada ${size!.label} — ${formatPrice(size!.price)}`,
-    ]
-    lines.push(
-      `Toppings (${selectedToppings.length}/${size!.maxToppings}): ${
-        selectedToppings.length > 0 ? selectedToppings.join(', ') : 'ninguno aún'
-      }`
-    )
+  function buildDetail(): string {
+    const lines: string[] = []
+    if (selectedToppings.length > 0) lines.push(`Toppings: ${selectedToppings.join(', ')}`)
+    if (selectedDressing) lines.push(`Aderezo: ${selectedDressing}`)
     if (selectedSpecials.length > 0) {
       const text = selectedSpecials.map(id => {
         const sp = SALAD_SPECIAL_TOPPINGS.find(s => s.id === id)!
         return `${sp.label} (+${formatPrice(sp.price)})`
       }).join(', ')
-      lines.push(`Toppings especiales: ${text}`)
+      lines.push(`Extras: ${text}`)
     }
-    lines.push('', `Total estimado: ${formatPrice(total)}`, '', '¿Está disponible?')
     return lines.join('\n')
   }
 
-  const orderUrl = size ? buildWhatsAppUrl(buildOrderMessage()) : '#'
+  function handleAddToCart() {
+    if (!size) return
+    addItem({
+      name: `Ensalada ${size.label}`,
+      price: total,
+      detail: buildDetail(),
+    })
+    setSelectedSizeId(null)
+    setSelectedToppings([])
+    setSelectedDressing(null)
+    setSelectedSpecials([])
+    setJustAdded(true)
+    setTimeout(() => setJustAdded(false), 1800)
+  }
 
   return (
     <div className="col-span-full bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
       {/* Header */}
-      <div className="bg-green-50 border-b border-green-100 px-6 py-4 flex items-center gap-3">
+      <div className="bg-brand-surface border-b border-brand-surface-mid px-6 py-4 flex items-center gap-3">
         <span className="text-2xl" aria-hidden="true">🥗</span>
         <div>
           <h3 className="font-bold text-gray-900 text-lg">Arma tu Ensalada</h3>
@@ -85,30 +88,71 @@ export function SaladConfigurator() {
       <div className="p-6 space-y-7">
         {/* Paso 1: Tamaño */}
         <div>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
             1. Elige el tamaño
           </p>
-          <div className="grid grid-cols-3 gap-3">
-            {SALAD_SIZES.map(s => (
-              <button
-                key={s.id}
-                onClick={() => handleSizeChange(s.id)}
-                className={`flex flex-col items-center gap-1 p-4 rounded-xl border-2 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 ${
-                  selectedSizeId === s.id
-                    ? 'border-green-500 bg-green-50 shadow-sm'
-                    : 'border-gray-200 hover:border-green-300 hover:bg-green-50/50'
-                }`}
-              >
-                <span className="text-xl" aria-hidden="true">
-                  {s.id === 'chica' ? '🥗' : s.id === 'mediana' ? '🥗🥗' : '🥗🥗🥗'}
-                </span>
-                <span className="font-bold text-gray-900 text-sm">{s.label}</span>
-                <span className="text-green-600 font-extrabold text-lg leading-none">
-                  {formatPrice(s.price)}
-                </span>
-                <span className="text-xs text-gray-400">hasta {s.maxToppings} toppings</span>
-              </button>
-            ))}
+          <div className="flex flex-col sm:flex-row gap-3">
+            {SALAD_SIZES.map((s, i) => {
+              const active = selectedSizeId === s.id
+              const configs = [
+                { photo: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=100&q=80', size: 'w-10 h-10', badge: null },
+                { photo: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=100&q=80', size: 'w-14 h-14', badge: 'Más popular' },
+                { photo: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=100&q=80', size: 'w-16 h-16', badge: null },
+              ]
+              const cfg = configs[i]
+              return (
+                <button
+                  key={s.id}
+                  onClick={() => handleSizeChange(s.id)}
+                  className={`relative flex-1 flex items-center gap-4 p-4 rounded-2xl border-2 text-left transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-light ${
+                    active
+                      ? 'border-brand-primary-light bg-brand-surface shadow-md'
+                      : 'border-gray-200 bg-white hover:border-brand-primary-subtle hover:shadow-sm'
+                  }`}
+                >
+                  {cfg.badge && (
+                    <span className="absolute -top-2.5 left-4 px-2.5 py-0.5 rounded-full bg-brand-accent text-white text-[10px] font-bold uppercase tracking-wide shadow-sm">
+                      {cfg.badge}
+                    </span>
+                  )}
+
+                  {/* Bowl visual */}
+                  <div className={`shrink-0 rounded-full overflow-hidden shadow-md ring-2 ${active ? 'ring-green-400' : 'ring-gray-100'} transition-all ${cfg.size}`}>
+                    <Image
+                      src={cfg.photo}
+                      alt={`Ensalada ${s.label}`}
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <p className={`font-bold text-base ${active ? 'text-brand-primary-dark' : 'text-gray-800'}`}>
+                      {s.label}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-0.5">hasta {s.maxToppings} toppings</p>
+                  </div>
+
+                  {/* Price + check */}
+                  <div className="shrink-0 flex flex-col items-end gap-1">
+                    <span className={`text-xl font-extrabold ${active ? 'text-brand-primary' : 'text-gray-700'}`}>
+                      {formatPrice(s.price)}
+                    </span>
+                    <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+                      active ? 'bg-brand-primary-light border-brand-primary-light' : 'border-gray-300'
+                    }`}>
+                      {active && (
+                        <svg viewBox="0 0 12 12" fill="none" className="w-3 h-3" aria-hidden="true">
+                          <path d="M2 6l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                    </span>
+                  </div>
+                </button>
+              )
+            })}
           </div>
         </div>
 
@@ -121,7 +165,7 @@ export function SaladConfigurator() {
               </p>
               <span className={`text-xs font-semibold px-2.5 py-1 rounded-full transition-colors ${
                 selectedToppings.length >= size.maxToppings
-                  ? 'bg-green-100 text-green-700'
+                  ? 'bg-brand-surface-mid text-brand-primary-dark'
                   : 'bg-gray-100 text-gray-500'
               }`}>
                 {selectedToppings.length}/{size.maxToppings}
@@ -136,12 +180,12 @@ export function SaladConfigurator() {
                     key={topping}
                     onClick={() => toggleTopping(topping)}
                     disabled={disabled}
-                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 ${
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-light ${
                       selected
-                        ? 'bg-green-600 text-white shadow-sm'
+                        ? 'bg-brand-primary text-white shadow-sm'
                         : disabled
                         ? 'bg-gray-50 text-gray-300 cursor-not-allowed'
-                        : 'bg-gray-100 text-gray-600 hover:bg-green-100 hover:text-green-700'
+                        : 'bg-gray-100 text-gray-600 hover:bg-brand-surface-mid hover:text-brand-primary-dark'
                     }`}
                   >
                     {topping}
@@ -152,12 +196,39 @@ export function SaladConfigurator() {
           </div>
         )}
 
-        {/* Paso 3: Toppings especiales */}
+        {/* Paso 3: Aderezo */}
+        {size && (
+          <div>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+              3. Elige tu aderezo
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {SALAD_DRESSINGS.map(dressing => {
+                const active = selectedDressing === dressing
+                return (
+                  <button
+                    key={dressing}
+                    onClick={() => setSelectedDressing(active ? null : dressing)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium border transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-light ${
+                      active
+                        ? 'bg-brand-primary border-brand-primary text-white shadow-sm'
+                        : 'bg-white border-gray-200 text-gray-600 hover:border-brand-primary-subtle hover:text-brand-primary-dark'
+                    }`}
+                  >
+                    {dressing}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Paso 4: Toppings especiales */}
         {size && (
           <div>
             <div className="flex items-center gap-2 mb-3">
               <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                3. Toppings especiales
+                4. Toppings especiales
               </p>
               <span className="text-xs text-gray-400">(costo adicional)</span>
             </div>
@@ -168,14 +239,14 @@ export function SaladConfigurator() {
                   <button
                     key={sp.id}
                     onClick={() => toggleSpecial(sp.id)}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${
                       selected
-                        ? 'bg-amber-500 border-amber-500 text-white shadow-sm'
-                        : 'bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100'
+                        ? 'bg-brand-accent-dark border-brand-accent-dark text-white shadow-sm'
+                        : 'bg-brand-accent-surface border-brand-accent-border text-brand-accent-text hover:bg-brand-accent-surface'
                     }`}
                   >
                     {sp.label}
-                    <span className={`text-xs font-bold ${selected ? 'text-amber-100' : 'text-amber-500'}`}>
+                    <span className={`text-xs font-bold ${selected ? 'text-brand-accent-surface' : 'text-brand-accent-dark'}`}>
                       +{formatPrice(sp.price)}
                     </span>
                   </button>
@@ -186,31 +257,51 @@ export function SaladConfigurator() {
         )}
 
         {/* Footer: total + botón */}
-        <div className="flex items-center justify-between pt-5 border-t border-gray-100">
-          <div>
-            {size ? (
-              <>
-                <p className="text-xs text-gray-400 mb-0.5">Total estimado</p>
-                <p className="text-2xl font-extrabold text-green-600">{formatPrice(total)}</p>
-              </>
-            ) : (
-              <p className="text-sm text-gray-400">Selecciona un tamaño para comenzar</p>
+        <div className={`-mx-6 -mb-6 px-6 py-5 flex items-center justify-between transition-colors duration-300 ${
+          size ? 'bg-brand-primary' : 'bg-gray-50 border-t border-gray-100'
+        }`}>
+          {size ? (
+            <p className="text-sm text-brand-primary-muted">Selecciona tus opciones</p>
+          ) : (
+            <p className="text-sm text-gray-400">Selecciona un tamaño para comenzar</p>
+          )}
+
+          <div className="flex items-center gap-3">
+            {size && (
+              <div className="text-right">
+                <p className="text-xs text-brand-primary-muted font-medium leading-none mb-0.5">Total estimado</p>
+                <p className="text-2xl font-extrabold text-white leading-none">{formatPrice(total)}</p>
+              </div>
             )}
+            <button
+              onClick={handleAddToCart}
+              disabled={!size}
+              className={`inline-flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 ${
+                justAdded
+                  ? 'bg-emerald-400 text-white cursor-default'
+                  : size
+                  ? 'bg-white text-brand-primary-dark hover:bg-brand-surface shadow-md hover:shadow-lg'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              {justAdded ? (
+                <>
+                  <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4" aria-hidden="true">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Agregada
+                </>
+              ) : (
+                <>
+                  <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4" aria-hidden="true">
+                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z" />
+                    <path d="M16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+                  </svg>
+                  Agregar al pedido
+                </>
+              )}
+            </button>
           </div>
-          <a
-            href={size ? orderUrl : undefined}
-            target={size ? '_blank' : undefined}
-            rel="noopener noreferrer"
-            aria-disabled={!size}
-            className={`inline-flex items-center gap-2 px-5 py-3 rounded-xl text-white font-semibold text-sm transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 ${
-              size
-                ? 'bg-green-600 hover:bg-green-700 shadow-sm hover:shadow-md'
-                : 'bg-gray-200 cursor-not-allowed pointer-events-none'
-            }`}
-          >
-            {WHATSAPP_ICON}
-            Ordenar por WhatsApp
-          </a>
         </div>
       </div>
     </div>
