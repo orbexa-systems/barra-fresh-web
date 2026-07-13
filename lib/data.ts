@@ -6,6 +6,8 @@ import type {
   GalleryImage,
   BusinessInfo,
   NavItem,
+  SaladSize,
+  SaladSpecialTopping,
 } from '@/types'
 
 export const BUSINESS_INFO: BusinessInfo = {
@@ -75,53 +77,43 @@ export const CATEGORIES: CategoryInfo[] = [
   },
 ]
 
+export const SALAD_SIZES: SaladSize[] = [
+  { id: 'chica', label: 'Chica', price: 65, maxToppings: 5 },
+  { id: 'mediana', label: 'Mediana', price: 85, maxToppings: 7 },
+  { id: 'grande', label: 'Grande', price: 105, maxToppings: 9 },
+]
+
+export const SALAD_TOPPINGS: string[] = [
+  'Espinaca baby',
+  'Jitomate cherry',
+  'Pepino',
+  'Zanahoria rallada',
+  'Cebolla morada',
+  'Pimiento',
+  'Maíz',
+  'Betabel',
+  'Brócoli',
+  'Champiñones',
+  'Germinados',
+]
+
+export const SALAD_DRESSINGS: string[] = [
+  'César',
+  'Vinagreta',
+  'Ranch',
+  'Miel Mostaza',
+  'Queso Parmesano',
+]
+
+export const SALAD_SPECIAL_TOPPINGS: SaladSpecialTopping[] = [
+  { id: 'nuez', label: 'Nuez', price: 10 },
+  { id: 'queso-feta', label: 'Queso Feta', price: 10 },
+  { id: 'aguacate', label: 'Aguacate', price: 15 },
+  { id: 'pollo', label: 'Pollo a la plancha', price: 20 },
+  { id: 'almendras', label: 'Almendras', price: 10 },
+]
+
 export const PRODUCTS: Product[] = [
-  // Ensaladas
-  {
-    id: 'ens-001',
-    name: 'Ensalada César',
-    description:
-      'Lechuga romana, crutones artesanales, parmesano y aderezo César casero',
-    price: 85,
-    image:
-      'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400&q=80',
-    category: 'ensaladas',
-    featured: true,
-    tags: ['sin gluten', 'vegetariana'],
-  },
-  {
-    id: 'ens-002',
-    name: 'Ensalada Mediterránea',
-    description:
-      'Espinaca, jitomate cherry, pepino, aceitunas, queso feta y vinagreta de limón',
-    price: 95,
-    image:
-      'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&q=80',
-    category: 'ensaladas',
-    featured: true,
-    tags: ['vegetariana', 'keto'],
-  },
-  {
-    id: 'ens-003',
-    name: 'Ensalada Tropical',
-    description:
-      'Arúgula, mango, aguacate, fresas, nueces y aderezo de maracuyá',
-    price: 105,
-    image:
-      'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80',
-    category: 'ensaladas',
-    tags: ['vegana', 'sin gluten'],
-  },
-  {
-    id: 'ens-004',
-    name: 'Ensalada Proteica',
-    description: 'Pechuga a la plancha, quinoa, espinaca, huevo cocido y aderezo de mostaza',
-    price: 120,
-    image:
-      'https://images.unsplash.com/photo-1607532941433-304659e8198a?w=400&q=80',
-    category: 'ensaladas',
-    tags: ['alta proteína'],
-  },
   // Jugos
   {
     id: 'jug-001',

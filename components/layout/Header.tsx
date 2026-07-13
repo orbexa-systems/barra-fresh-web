@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { NAV_ITEMS, BUSINESS_INFO } from '@/lib/data'

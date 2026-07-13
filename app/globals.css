@@ -1,14 +1,49 @@
 @import "tailwindcss";
 
+/* ── BarraFresh Brand Tokens ─────────────────────────────────────────
+   Cambia estos valores para actualizar la paleta en todo el proyecto.
+   ──────────────────────────────────────────────────────────────────── */
 :root {
   --background: #ffffff;
   --foreground: #111827;
+
+  /* Primary (verde) */
+  --brand-primary:        #16a34a; /* green-600 */
+  --brand-primary-dark:   #15803d; /* green-700 */
+  --brand-primary-light:  #22c55e; /* green-500 */
+  --brand-primary-subtle: #86efac; /* green-300 */
+  --brand-primary-muted:  #bbf7d0; /* green-200 — texto sobre fondos oscuros */
+  --brand-surface:        #f0fdf4; /* green-50  */
+  --brand-surface-mid:    #dcfce7; /* green-100 */
+
+  /* Accent (ámbar) */
+  --brand-accent:         #fbbf24; /* amber-400 */
+  --brand-accent-dark:    #f59e0b; /* amber-500 */
+  --brand-accent-text:    #b45309; /* amber-700 */
+  --brand-accent-surface: #fffbeb; /* amber-50  */
+  --brand-accent-border:  #fde68a; /* amber-200 */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
+
+  /* Primary */
+  --color-brand-primary:        var(--brand-primary);
+  --color-brand-primary-dark:   var(--brand-primary-dark);
+  --color-brand-primary-light:  var(--brand-primary-light);
+  --color-brand-primary-subtle: var(--brand-primary-subtle);
+  --color-brand-primary-muted:  var(--brand-primary-muted);
+  --color-brand-surface:        var(--brand-surface);
+  --color-brand-surface-mid:    var(--brand-surface-mid);
+
+  /* Accent */
+  --color-brand-accent:         var(--brand-accent);
+  --color-brand-accent-dark:    var(--brand-accent-dark);
+  --color-brand-accent-text:    var(--brand-accent-text);
+  --color-brand-accent-surface: var(--brand-accent-surface);
+  --color-brand-accent-border:  var(--brand-accent-border);
 }
 
 body {

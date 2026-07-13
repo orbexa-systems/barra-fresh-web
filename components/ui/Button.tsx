@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { cn } from '@/lib/utils'
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
@@ -13,12 +13,12 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<NonNullable<ButtonProps['variant']>, string> = {
   primary:
-    'bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg',
+    'bg-brand-primary hover:bg-brand-primary-dark text-white shadow-md hover:shadow-lg',
   secondary:
     'bg-lime-400 hover:bg-lime-500 text-gray-900 shadow-md hover:shadow-lg',
   outline:
-    'border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white',
-  ghost: 'text-green-600 hover:bg-green-50',
+    'border-2 border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white',
+  ghost: 'text-brand-primary hover:bg-brand-surface',
   whatsapp:
     'bg-[#25D366] hover:bg-[#1ebe57] text-white shadow-md hover:shadow-lg',
 }
@@ -38,7 +38,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const classes = cn(
-    'inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
+    'inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-light focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
     variantClasses[variant],
     sizeClasses[size],
     className,

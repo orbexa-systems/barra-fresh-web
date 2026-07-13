@@ -1,4 +1,4 @@
-import Image from 'next/image'
+﻿import Image from 'next/image'
 import { GALLERY_IMAGES } from '@/lib/data'
 
 export function GallerySection() {
@@ -6,12 +6,12 @@ export function GallerySection() {
     <section id="galeria" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-green-100 text-green-700 text-sm font-semibold mb-4">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-brand-surface-mid text-brand-primary-dark text-sm font-semibold mb-4">
             Galería
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
             Cada platillo, una{' '}
-            <span className="text-green-600">experiencia</span>
+            <span className="text-brand-primary">experiencia</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Visualmente delicioso y nutricionalmente completo. Así lucen nuestras
