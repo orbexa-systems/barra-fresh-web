@@ -32,8 +32,11 @@ export function Header() {
             className="flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-light rounded-lg"
             aria-label="BarraFresh - Ir al inicio"
           >
-            <div className="w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center text-white font-bold text-lg shadow-sm">
-              BF
+            <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-sm">
+              <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" aria-hidden="true">
+                <path d="M12 2C7 2 3 7 3 12c0 2.5 1 4.8 2.6 6.5C7 20 9.4 21 12 21s5-1 6.4-2.5C20 16.8 21 14.5 21 12c0-5-4-10-9-10z" fill="white" fillOpacity="0.25"/>
+                <path d="M12 21V10M12 10C12 10 8 8 6 5M12 10C12 10 16 8 18 5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </div>
             <span className="text-xl font-bold text-gray-900">
               Barra<span className="text-brand-primary">Fresh</span>

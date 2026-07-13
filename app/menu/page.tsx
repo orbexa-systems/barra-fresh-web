@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { MenuClient } from '@/components/menu/MenuClient'
 import { BUSINESS_INFO } from '@/lib/data'
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://barrafresh-web.vercel.app'
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://barra-fresh-web.vercel.app'
 
 export const metadata: Metadata = {
   title: 'Menú Digital | BarraFresh',
