@@ -1,13 +1,13 @@
-import { buildWhatsAppUrl } from '@/lib/whatsapp'
+﻿import { buildWhatsAppUrl } from '@/lib/whatsapp'
 
 export function OrderSection() {
   return (
     <section className="py-20 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="bg-gradient-to-br from-green-600 to-green-700 rounded-3xl p-10 md:p-16 shadow-2xl relative overflow-hidden">
+        <div className="bg-gradient-to-br from-brand-primary to-brand-primary-dark rounded-3xl p-10 md:p-16 shadow-2xl relative overflow-hidden">
           {/* Decoration */}
           <div
-            className="absolute top-0 right-0 w-64 h-64 bg-green-500 rounded-full blur-3xl opacity-30 translate-x-1/2 -translate-y-1/2"
+            className="absolute top-0 right-0 w-64 h-64 bg-brand-primary-light rounded-full blur-3xl opacity-30 translate-x-1/2 -translate-y-1/2"
             aria-hidden="true"
           />
           <div
@@ -20,7 +20,7 @@ export function OrderSection() {
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               ¿Listo para ordenar?
             </h2>
-            <p className="text-green-100 text-lg mb-8 max-w-lg mx-auto leading-relaxed">
+            <p className="text-brand-surface-mid text-lg mb-8 max-w-lg mx-auto leading-relaxed">
               Haz tu pedido fácil y rápido por WhatsApp. Te atendemos en minutos
               con ingredientes frescos del día.
             </p>
@@ -30,7 +30,7 @@ export function OrderSection() {
                 href={buildWhatsAppUrl('Hola BarraFresh, me gustaría hacer un pedido. ¿Podrían ayudarme?')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-white text-green-700 hover:bg-green-50 font-bold px-8 py-4 text-lg rounded-xl shadow-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                className="inline-flex items-center gap-2 bg-white text-brand-primary-dark hover:bg-brand-surface font-bold px-8 py-4 text-lg rounded-xl shadow-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
                 aria-label="Hacer pedido por WhatsApp"
               >
                 <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 flex-shrink-0" aria-hidden="true">
@@ -47,7 +47,7 @@ export function OrderSection() {
               </a>
             </div>
 
-            <p className="text-green-200 text-sm mt-6">
+            <p className="text-brand-primary-muted text-sm mt-6">
               Tiempo de respuesta promedio: menos de 5 minutos
             </p>
           </div>

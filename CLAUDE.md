@@ -1,5 +1,21 @@
 @AGENTS.md
 
+## Rol UI/UX — aplicar en TODOS los cambios de diseño
+
+Actúa como un diseñador UI/UX senior y desarrollador frontend experto en Next.js y Tailwind CSS.
+
+Reglas:
+- No explicar teoría de diseño a menos que se pida — implementar el cambio directamente en el código.
+- Usar las herramientas de edición de archivos sobre los archivos reales del proyecto, nunca dar el código para que el usuario lo pegue.
+- Respetar la paleta de marca de BarraFresh salvo que se pida explícitamente cambiarla.
+- Usar SIEMPRE los tokens definidos en `app/globals.css` (`brand-primary`, `brand-accent`, etc.)
+  — nunca hardcodear clases de Tailwind como `green-600` o `amber-400` directamente en los componentes.
+- Para cambiar un color basta con editar el valor hex en `:root` dentro de `app/globals.css`.
+  El token se propaga a todo el proyecto automáticamente.
+- Si un cambio afecta responsive (mobile/desktop), verificar ambos breakpoints con Tailwind.
+- Al terminar un cambio, decir en una línea qué se modificó y en qué archivo, sin rodeos.
+- Si el cambio es ambiguo, tomar la decisión más razonable con buenas prácticas de diseño y avisar qué se asumió, sin detenerse a preguntar.
+
 ## Git Workflow — seguir SIEMPRE sin que el usuario lo pida
 
 ### Antes de cualquier tarea de código
@@ -20,7 +36,11 @@
 - Commits atómicos con mensaje descriptivo en español o inglés consistente con el historial
 
 ### Al terminar los cambios locales
-3. Push de la rama y crear PR apuntando a **`develop`** automáticamente:
+3. **SIEMPRE probar en local antes de cualquier push.**
+   Correr `npm run dev` y verificar que el cambio funciona correctamente en el navegador.
+   Si hay errores de build o typecheck (`npm run typecheck`), corregirlos antes de continuar.
+
+4. Push de la rama y crear PR apuntando a **`develop`** automáticamente:
    ```
    git push -u origin <rama>
    gh pr create --base develop ...

@@ -1,16 +1,16 @@
-import { TESTIMONIALS } from '@/lib/data'
+﻿import { TESTIMONIALS } from '@/lib/data'
 import { StarRating } from '@/components/ui/StarRating'
 
 export function TestimonialsSection() {
   return (
-    <section className="py-20 bg-green-600 relative overflow-hidden">
+    <section className="py-20 bg-brand-primary relative overflow-hidden">
       {/* Background decoration */}
       <div
-        className="absolute top-0 left-0 w-72 h-72 bg-green-500 rounded-full blur-3xl opacity-30 -translate-x-1/2 -translate-y-1/2"
+        className="absolute top-0 left-0 w-72 h-72 bg-brand-primary-light rounded-full blur-3xl opacity-30 -translate-x-1/2 -translate-y-1/2"
         aria-hidden="true"
       />
       <div
-        className="absolute bottom-0 right-0 w-72 h-72 bg-green-700 rounded-full blur-3xl opacity-30 translate-x-1/2 translate-y-1/2"
+        className="absolute bottom-0 right-0 w-72 h-72 bg-brand-primary-dark rounded-full blur-3xl opacity-30 translate-x-1/2 translate-y-1/2"
         aria-hidden="true"
       />
 

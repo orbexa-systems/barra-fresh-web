@@ -1,4 +1,4 @@
-import Image from 'next/image'
+﻿import Image from 'next/image'
 import { WhatsAppButton } from '@/components/ui/WhatsAppButton'
 import { Button } from '@/components/ui/Button'
 import { BUSINESS_INFO } from '@/lib/data'
@@ -7,11 +7,11 @@ export function HeroSection() {
   return (
     <section
       id="inicio"
-      className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-gradient-to-br from-green-50 via-white to-lime-50"
+      className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-gradient-to-br from-brand-surface via-white to-lime-50"
     >
       {/* Background decorative circles */}
       <div
-        className="absolute top-20 right-0 w-96 h-96 bg-green-100 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/2"
+        className="absolute top-20 right-0 w-96 h-96 bg-brand-surface-mid rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/2"
         aria-hidden="true"
       />
       <div
@@ -23,14 +23,14 @@ export function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Content */}
           <div className="text-center lg:text-left">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold mb-6">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-surface-mid text-brand-primary-dark text-sm font-semibold mb-6">
               <span aria-hidden="true">🌿</span>
               Comida saludable en {BUSINESS_INFO.city.split(',')[0]}
             </span>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
               Alimentación{' '}
-              <span className="text-green-600 relative">
+              <span className="text-brand-primary relative">
                 saludable
                 <svg
                   className="absolute -bottom-1 left-0 w-full"
@@ -141,7 +141,7 @@ export function HeroSection() {
 
             {/* Floating badge */}
             <div className="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-xl p-4 flex items-center gap-3 border border-gray-100">
-              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-lg" aria-hidden="true">
+              <div className="w-10 h-10 bg-brand-surface-mid rounded-full flex items-center justify-center text-lg" aria-hidden="true">
                 🥗
               </div>
               <div>

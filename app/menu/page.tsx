@@ -1,7 +1,6 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { MenuClient } from '@/components/menu/MenuClient'
-import { WhatsAppFloatingButton } from '@/components/ui/WhatsAppButton'
 import { BUSINESS_INFO } from '@/lib/data'
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://barra-fresh-web.vercel.app'
@@ -64,14 +63,14 @@ export default function MenuPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link
             href="/"
-            className="flex items-center gap-2 font-bold text-green-600 text-xl tracking-tight hover:text-green-700 transition-colors"
+            className="flex items-center gap-2 font-bold text-brand-primary text-xl tracking-tight hover:text-brand-primary-dark transition-colors"
             aria-label="Ir al inicio de BarraFresh"
           >
             🌿 BarraFresh
           </Link>
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-green-600 transition-colors focus:outline-none focus-visible:underline"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-brand-primary transition-colors focus:outline-none focus-visible:underline"
           >
             <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4" aria-hidden="true">
               <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
@@ -86,16 +85,16 @@ export default function MenuPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Page heading */}
             <div className="text-center mb-10">
-              <span className="inline-block px-4 py-1.5 rounded-full bg-green-100 text-green-700 text-sm font-semibold mb-4">
+              <span className="inline-block px-4 py-1.5 rounded-full bg-brand-surface-mid text-brand-primary-dark text-sm font-semibold mb-4">
                 Menú Digital
               </span>
               <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
                 ¿Qué vas a{' '}
-                <span className="text-green-600">ordenar hoy?</span>
+                <span className="text-brand-primary">ordenar hoy?</span>
               </h1>
               <p className="text-gray-500 text-base max-w-xl mx-auto">
                 Todo preparado al momento con ingredientes frescos. Da clic en{' '}
-                <strong className="text-green-600">Ordenar</strong> para pedir por WhatsApp.
+                <strong className="text-brand-primary">Ordenar</strong> para pedir por WhatsApp.
               </p>
             </div>
 
@@ -104,7 +103,6 @@ export default function MenuPage() {
         </section>
       </main>
 
-      <WhatsAppFloatingButton />
     </>
   )
 }
