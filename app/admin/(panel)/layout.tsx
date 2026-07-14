@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { AdminSidebar } from '@/components/admin/AdminSidebar'
-import { AdminHeader } from '@/components/admin/AdminHeader'
 
 export default async function AdminPanelLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createServerSupabaseClient()
@@ -11,13 +10,10 @@ export default async function AdminPanelLayout({ children }: { children: React.R
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      <AdminSidebar />
-      <div className="flex-1 flex flex-col min-w-0">
-        <AdminHeader email={user.email ?? ''} />
-        <main className="flex-1 p-6 overflow-auto">
-          {children}
-        </main>
-      </div>
+      <AdminSidebar email={user.email ?? ''} />
+      <main className="flex-1 min-w-0 p-8 overflow-auto">
+        {children}
+      </main>
     </div>
   )
 }
