@@ -3,7 +3,6 @@
 import { revalidatePath } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase'
-import { redirect } from 'next/navigation'
 import type { Database } from '@/types/database'
 
 type ProductoUpdate = Database['public']['Tables']['productos']['Update']
@@ -60,7 +59,6 @@ export async function createProducto(formData: FormData) {
 
   if (error) throw new Error(error.message)
   REVALIDATE()
-  redirect('/admin/menu')
 }
 
 export async function updateProducto(id: string, formData: FormData) {
@@ -87,7 +85,6 @@ export async function updateProducto(id: string, formData: FormData) {
   const { error } = await supabase.from('productos').update(update).eq('id', id)
   if (error) throw new Error(error.message)
   REVALIDATE()
-  redirect('/admin/menu')
 }
 
 // ─── Categorías ──────────────────────────────────────────────
