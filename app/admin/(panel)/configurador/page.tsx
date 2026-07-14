@@ -11,19 +11,18 @@ export default async function ConfiguradorAdminPage() {
   ])
 
   return (
-    <div className="max-w-4xl">
+    <div className="max-w-5xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Configurador de ensaladas</h1>
-        <p className="text-sm text-gray-400 mt-1">Gestiona los tamaños, toppings y aderezos que el cliente puede elegir.</p>
+        <h1 className="text-[28px] font-bold text-gray-900 leading-tight">Configurador</h1>
+        <p className="text-sm text-gray-500 mt-1">
+          {tamanos.length} tamaños · {toppings.length} toppings · {aderezos.length} aderezos
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Tamaños — ocupa todo el ancho arriba */}
         <div className="lg:col-span-2">
           <TamanosPanel tamanos={tamanos} />
         </div>
-
-        {/* Toppings + Aderezos lado a lado */}
         <ToppingsPanel toppings={toppings} />
         <AderezosPanel aderezos={aderezos} />
       </div>

@@ -6,8 +6,9 @@ import { createTopping, updateTopping, toggleToppingDisponible, deleteTopping } 
 import type { Topping } from '@/lib/data/configurador'
 
 interface Props { toppings: Topping[] }
-
 type TipoTab = 'base' | 'especial'
+
+const INPUT = 'w-full px-3 py-2 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-colors'
 
 export function ToppingsPanel({ toppings }: Props) {
   const [tab, setTab] = useState<TipoTab>('base')
@@ -39,91 +40,131 @@ export function ToppingsPanel({ toppings }: Props) {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5">
-      <h2 className="text-sm font-semibold text-gray-700 mb-1">Toppings</h2>
-      <p className="text-xs text-gray-400 mb-4">Los toppings base no tienen costo extra; los especiales sí.</p>
-
-      {/* Tabs */}
-      <div className="flex gap-1 mb-4 bg-gray-100 rounded-xl p-1 w-fit">
-        {(['base', 'especial'] as TipoTab[]).map(tipo => (
-          <button
-            key={tipo}
-            onClick={() => { setTab(tipo); setEditingId(null) }}
-            className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-colors capitalize ${
-              tab === tipo ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            {tipo}
-          </button>
-        ))}
-      </div>
-
-      {/* Header */}
-      <div className="grid grid-cols-[1fr_64px_56px_28px] gap-2 px-1 mb-1">
-        <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Nombre</span>
+    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col">
+      {/* Card header */}
+      <div className="px-6 py-5 border-b border-gray-100">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-[15px] font-semibold text-gray-900">Toppings</h2>
+            <p className="text-sm text-gray-500 mt-0.5">Ingredientes disponibles para el armador.</p>
+          </div>
+          {/* Tabs dentro del header */}
+          <div className="flex gap-1 p-1 bg-gray-100 rounded-xl">
+            {(['base', 'especial'] as TipoTab[]).map(tipo => (
+              <button
+                key={tipo}
+                onClick={() => { setTab(tipo); setEditingId(null) }}
+                className={`px-4 py-1.5 rounded-lg text-[13px] font-semibold transition-colors capitalize ${
+                  tab === tipo
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                {tipo}
+              </button>
+            ))}
+          </div>
+        </div>
         {tab === 'especial' && (
-          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider text-right">Extra</span>
+          <p className="text-xs text-brand-accent-text bg-brand-accent-surface border border-brand-accent-border rounded-lg px-3 py-1.5 mt-3">
+            Los toppings especiales tienen un costo extra que se suma al precio del tamaño.
+          </p>
         )}
-        {tab === 'base' && <span />}
-        <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider text-center">Disp.</span>
-        <span />
       </div>
 
-      <ul className="divide-y divide-gray-50 mb-4 min-h-[60px]">
+      {/* Column headers */}
+      <div className="flex items-center gap-4 px-6 py-3 border-b border-gray-100 bg-gray-50/60">
+        <span className="flex-1 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Nombre</span>
+        {tab === 'especial' && (
+          <span className="w-20 text-[11px] font-semibold text-gray-400 uppercase tracking-wider text-right shrink-0">Precio extra</span>
+        )}
+        <span className="w-24 text-[11px] font-semibold text-gray-400 uppercase tracking-wider text-center shrink-0">Disponible</span>
+        <span className="w-16 shrink-0" />
+      </div>
+
+      {/* Rows */}
+      <ul className="flex-1 divide-y divide-gray-100">
         {filtered.length === 0 && (
-          <li className="py-4 text-sm text-gray-400 text-center">Sin toppings {tab}s todavía.</li>
+          <li className="px-6 py-10 text-center text-sm text-gray-400">
+            No hay toppings {tab === 'base' ? 'base' : 'especiales'} todavía.
+          </li>
         )}
         {filtered.map(t => (
-          <li key={t.id} className="py-2">
+          <li key={t.id}>
             {editingId === t.id ? (
-              <div className="grid grid-cols-[1fr_64px] gap-2 items-center">
-                <input
-                  autoFocus
-                  value={edit.nombre}
-                  onChange={e => setEdit(s => ({ ...s, nombre: e.target.value }))}
-                  className="px-2 py-1.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary-light"
-                />
-                {tab === 'especial' && (
+              <div className="px-6 py-4 bg-brand-surface/40">
+                <div className="flex items-center gap-3 mb-3">
                   <input
-                    type="number"
-                    value={edit.precio_extra}
-                    onChange={e => setEdit(s => ({ ...s, precio_extra: e.target.value }))}
-                    className="px-2 py-1.5 rounded-lg border border-gray-200 text-sm text-right focus:outline-none focus:ring-2 focus:ring-brand-primary-light"
+                    autoFocus
+                    value={edit.nombre}
+                    onChange={e => setEdit(s => ({ ...s, nombre: e.target.value }))}
+                    placeholder="Nombre del topping"
+                    className={`flex-1 ${INPUT}`}
                   />
-                )}
-                <div className="col-span-2 flex gap-2 mt-1">
-                  <button onClick={() => saveEdit(t.id)} disabled={saving} className="text-xs font-semibold text-brand-primary-dark hover:underline disabled:opacity-50">Guardar</button>
-                  <button onClick={() => setEditingId(null)} className="text-xs text-gray-400 hover:underline">Cancelar</button>
+                  {tab === 'especial' && (
+                    <div className="relative w-24 shrink-0">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">+$</span>
+                      <input
+                        type="number"
+                        value={edit.precio_extra}
+                        onChange={e => setEdit(s => ({ ...s, precio_extra: e.target.value }))}
+                        className="w-full pl-8 pr-3 py-2 rounded-xl border border-gray-200 text-sm text-right text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-colors"
+                      />
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => saveEdit(t.id)}
+                    disabled={saving || !edit.nombre.trim()}
+                    className="px-4 py-1.5 rounded-lg bg-brand-primary hover:bg-brand-primary-dark text-white text-xs font-semibold transition-colors disabled:opacity-50"
+                  >
+                    {saving ? 'Guardando…' : 'Guardar cambios'}
+                  </button>
+                  <button
+                    onClick={() => setEditingId(null)}
+                    className="px-4 py-1.5 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                  >
+                    Cancelar
+                  </button>
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-[1fr_64px_56px_28px] gap-2 items-center">
-                <span className={`text-sm font-medium ${t.disponible ? 'text-gray-800' : 'text-gray-400 line-through'}`}>
+              <div className={`flex items-center gap-4 px-6 py-4 min-h-[60px] transition-colors ${t.disponible ? 'hover:bg-gray-50' : 'bg-gray-50/50 hover:bg-gray-100/60'}`}>
+                <span className={`flex-1 text-sm font-medium ${t.disponible ? 'text-gray-900' : 'text-gray-400 line-through'}`}>
                   {t.nombre}
                 </span>
-                <span className="text-sm text-gray-500 text-right">
-                  {t.precio_extra > 0 ? `+$${t.precio_extra}` : '—'}
-                </span>
-                <div className="flex justify-center">
+                {tab === 'especial' && (
+                  <span className="w-20 text-sm font-medium text-right shrink-0">
+                    {t.precio_extra > 0
+                      ? <span className="text-brand-accent-text">+${t.precio_extra.toFixed(0)}</span>
+                      : <span className="text-gray-400">—</span>}
+                  </span>
+                )}
+                <div className="w-24 flex justify-center shrink-0">
                   <ToggleSwitch
                     checked={t.disponible}
                     label={`${t.nombre} disponible`}
                     onToggle={v => toggleToppingDisponible(t.id, v)}
                   />
                 </div>
-                <div className="flex justify-end gap-1">
-                  <button onClick={() => startEdit(t)} className="text-gray-300 hover:text-gray-600 transition-colors" title="Editar">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <div className="w-16 flex items-center justify-end gap-1 shrink-0">
+                  <button
+                    onClick={() => startEdit(t)}
+                    title="Editar topping"
+                    className="p-2 rounded-lg text-gray-400 hover:text-brand-primary hover:bg-brand-surface transition-colors"
+                  >
+                    <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                   </button>
                   <button
                     onClick={() => { if (confirm(`¿Eliminar "${t.nombre}"?`)) deleteTopping(t.id) }}
-                    className="text-gray-300 hover:text-red-500 transition-colors"
-                    title="Eliminar"
+                    title="Eliminar topping"
+                    className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
                   >
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M4 7h16" />
+                    <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                   </button>
                 </div>
@@ -133,25 +174,34 @@ export function ToppingsPanel({ toppings }: Props) {
         ))}
       </ul>
 
-      <form ref={formRef} action={handleCreate} className="flex gap-2 items-end">
+      {/* Add form */}
+      <form ref={formRef} action={handleCreate} className="px-6 py-5 border-t border-gray-100 bg-gray-50/40 mt-auto">
         <input name="tipo" type="hidden" value={tab} />
-        <div className="flex-1">
-          <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">Nombre</label>
-          <input name="nombre" required placeholder={`Nuevo topping ${tab}…`} className="w-full px-2 py-1.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary-light" />
-        </div>
-        {tab === 'especial' && (
-          <div className="w-20">
-            <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block mb-1">+Precio</label>
-            <input name="precio_extra" type="number" min={0} step={0.01} defaultValue={0} className="w-full px-2 py-1.5 rounded-lg border border-gray-200 text-sm text-right focus:outline-none focus:ring-2 focus:ring-brand-primary-light" />
+        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-3">
+          Agregar topping {tab}
+        </p>
+        <div className="flex items-end gap-3">
+          <div className="flex-1">
+            <label className="block text-xs font-medium text-gray-600 mb-1.5">Nombre</label>
+            <input name="nombre" required placeholder={`Nuevo topping ${tab}…`} className={INPUT} />
           </div>
-        )}
-        <button
-          type="submit"
-          disabled={creating}
-          className="px-3 py-1.5 rounded-lg bg-brand-surface text-brand-primary-dark text-xs font-semibold hover:bg-brand-surface-mid transition-colors disabled:opacity-50 whitespace-nowrap"
-        >
-          {creating ? '…' : '+ Agregar'}
-        </button>
+          {tab === 'especial' && (
+            <div className="w-24 shrink-0">
+              <label className="block text-xs font-medium text-gray-600 mb-1.5">Precio extra</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">+$</span>
+                <input name="precio_extra" type="number" min={0} step={0.01} defaultValue={0} className="w-full pl-8 pr-3 py-2 rounded-xl border border-gray-200 text-sm text-right text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-colors" />
+              </div>
+            </div>
+          )}
+          <button
+            type="submit"
+            disabled={creating}
+            className="shrink-0 px-4 py-2 rounded-xl bg-brand-primary hover:bg-brand-primary-dark text-white text-sm font-semibold transition-colors disabled:opacity-50"
+          >
+            {creating ? '…' : '+ Agregar'}
+          </button>
+        </div>
       </form>
     </div>
   )
