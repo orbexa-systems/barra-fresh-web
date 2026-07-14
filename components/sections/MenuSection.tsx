@@ -1,6 +1,17 @@
-﻿import { MenuClient } from '@/components/menu/MenuClient'
+import { getCategorias } from '@/lib/data/categorias'
+import { getProductos } from '@/lib/data/productos'
+import { getTamanos, getToppings, getAderezos } from '@/lib/data/configurador'
+import { MenuClient } from '@/components/menu/MenuClient'
 
-export function MenuSection() {
+export async function MenuSection() {
+  const [categorias, productos, tamanos, toppings, aderezos] = await Promise.all([
+    getCategorias(),
+    getProductos(),
+    getTamanos(),
+    getToppings(),
+    getAderezos(),
+  ])
+
   return (
     <section id="menu" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -17,7 +28,13 @@ export function MenuSection() {
             frescos seleccionados cada día.
           </p>
         </div>
-        <MenuClient />
+        <MenuClient
+          productos={productos}
+          categorias={categorias}
+          tamanos={tamanos}
+          toppings={toppings}
+          aderezos={aderezos}
+        />
       </div>
     </section>
   )
