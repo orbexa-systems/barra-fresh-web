@@ -37,3 +37,24 @@ export async function getAderezos(): Promise<Aderezo[]> {
   if (error) throw new Error(error.message)
   return data
 }
+
+export async function getAllTamanosAdmin(): Promise<TamanoEnsalada[]> {
+  const supabase = await createServerSupabaseClient()
+  const { data, error } = await supabase.from('tamanos_ensalada').select('*').order('orden')
+  if (error) throw new Error(error.message)
+  return data
+}
+
+export async function getAllToppingsAdmin(): Promise<Topping[]> {
+  const supabase = await createServerSupabaseClient()
+  const { data, error } = await supabase.from('toppings').select('*').order('orden')
+  if (error) throw new Error(error.message)
+  return data
+}
+
+export async function getAllAderezosAdmin(): Promise<Aderezo[]> {
+  const supabase = await createServerSupabaseClient()
+  const { data, error } = await supabase.from('aderezos').select('*').order('orden')
+  if (error) throw new Error(error.message)
+  return data
+}
