@@ -58,6 +58,14 @@ export function PedidosList({ pedidos, onVerDetalle }: Props) {
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+      {/* Card header */}
+      <div className="px-6 py-5 border-b border-gray-100">
+        <h2 className="text-[15px] font-semibold text-gray-900">Historial de pedidos</h2>
+        <p className="text-sm text-gray-500 mt-0.5">
+          {pedidos.length} {pedidos.length === 1 ? 'pedido' : 'pedidos'} en este filtro
+        </p>
+      </div>
+
       {/* Column headers */}
       <div className="flex items-center gap-4 px-6 py-3 border-b border-gray-100 bg-gray-50/60">
         <span className="w-24 text-[11px] font-semibold text-gray-400 uppercase tracking-wider shrink-0">Pedido</span>
@@ -74,7 +82,7 @@ export function PedidosList({ pedidos, onVerDetalle }: Props) {
         {pedidos.map(p => (
           <li
             key={p.id}
-            className="flex items-center gap-4 px-6 py-4 min-h-[68px] hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-4 px-6 py-4 min-h-[80px] hover:bg-gray-50 transition-colors"
           >
             {/* ID */}
             <span className="w-24 font-mono text-xs font-semibold text-gray-500 shrink-0 truncate">
@@ -87,7 +95,7 @@ export function PedidosList({ pedidos, onVerDetalle }: Props) {
             </span>
 
             {/* Cliente */}
-            <span className="flex-1 text-sm font-medium text-gray-800 truncate min-w-0">
+            <span className="flex-1 text-[15px] font-semibold text-gray-800 truncate min-w-0">
               {p.nombre_cliente || <span className="text-gray-400 font-normal italic">Sin nombre</span>}
             </span>
 
