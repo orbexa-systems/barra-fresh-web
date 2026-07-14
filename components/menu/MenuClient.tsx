@@ -1,15 +1,24 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { PRODUCTS, CATEGORIES } from '@/lib/data'
 import { buildWhatsAppUrl } from '@/lib/whatsapp'
 import { formatPrice } from '@/lib/utils'
-import type { Product } from '@/types'
 import { CartProvider, useCart } from '@/components/menu/CartContext'
 import { CartBar } from '@/components/menu/CartBar'
 import { SaladConfigurator } from '@/components/menu/SaladConfigurator'
 import { WhatsAppFloatingButton } from '@/components/ui/WhatsAppButton'
+import type { Producto } from '@/lib/data/productos'
+import type { Categoria } from '@/lib/data/categorias'
+import type { TamanoEnsalada, Topping, Aderezo } from '@/lib/data/configurador'
+
+interface MenuClientProps {
+  productos: Producto[]
+  categorias: Categoria[]
+  tamanos: TamanoEnsalada[]
+  toppings: Topping[]
+  aderezos: Aderezo[]
+}
 
 const WA_ICON = (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4" aria-hidden="true">
@@ -23,12 +32,12 @@ function FloatingButtonGuard() {
   return <WhatsAppFloatingButton />
 }
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ producto }: { producto: Producto }) {
   const { addItem } = useCart()
   const [justAdded, setJustAdded] = useState(false)
 
   function handleAdd() {
-    addItem({ name: product.name, price: product.price })
+    addItem({ name: producto.nombre, price: producto.precio })
     setJustAdded(true)
     setTimeout(() => setJustAdded(false), 1500)
   }
@@ -36,41 +45,42 @@ function ProductCard({ product }: { product: Product }) {
   return (
     <article className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group">
       <div className="relative h-48 overflow-hidden">
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        />
-        {product.featured && (
+        {producto.imagen_url ? (
+          <Image
+            src={producto.imagen_url}
+            alt={producto.nombre}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="w-full h-full bg-brand-surface flex items-center justify-center">
+            <span className="text-4xl">🥗</span>
+          </div>
+        )}
+        {producto.destacado && (
           <span className="absolute top-3 left-3 px-3 py-1 bg-brand-primary-light text-white text-xs font-bold rounded-full shadow-sm">
             Popular
-          </span>
-        )}
-        {product.tags?.[0] && (
-          <span className="absolute top-3 right-3 px-3 py-1 bg-white/90 text-gray-700 text-xs font-medium rounded-full backdrop-blur-sm">
-            {product.tags[0]}
           </span>
         )}
       </div>
       <div className="p-5">
         <h3 className="font-bold text-gray-900 text-lg mb-1 group-hover:text-brand-primary transition-colors duration-200">
-          {product.name}
+          {producto.nombre}
         </h3>
         <p className="text-gray-500 text-sm leading-relaxed mb-4">
-          {product.description}
+          {producto.descripcion}
         </p>
         <div className="flex items-center justify-between">
           <span className="text-2xl font-extrabold text-brand-primary">
-            {formatPrice(product.price)}
+            {formatPrice(producto.precio)}
           </span>
           <button
             onClick={handleAdd}
             className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-white text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-light focus-visible:ring-offset-2 ${
               justAdded ? 'bg-emerald-500' : 'bg-brand-primary hover:bg-brand-primary-dark'
             }`}
-            aria-label={`Agregar ${product.name} al pedido`}
+            aria-label={`Agregar ${producto.nombre} al pedido`}
           >
             {justAdded ? (
               <>
@@ -95,18 +105,19 @@ function ProductCard({ product }: { product: Product }) {
   )
 }
 
-function MenuContent() {
+function MenuContent({ productos, categorias, tamanos, toppings, aderezos }: MenuClientProps) {
   const { items } = useCart()
   const [activeCategory, setActiveCategory] = useState<string>('all')
 
-  const showSalads = activeCategory === 'all' || activeCategory === 'ensaladas'
+  const ensaladaCatId = categorias.find(c => c.nombre.toLowerCase() === 'ensaladas')?.id
+  const showSalads = activeCategory === 'all' || activeCategory === ensaladaCatId
 
   const filteredProducts =
     activeCategory === 'all'
-      ? PRODUCTS.filter(p => p.category !== 'ensaladas')
-      : activeCategory === 'ensaladas'
+      ? productos.filter(p => p.categoria_id !== ensaladaCatId)
+      : activeCategory === ensaladaCatId
       ? []
-      : PRODUCTS.filter(p => p.category === activeCategory)
+      : productos.filter(p => p.categoria_id === activeCategory)
 
   return (
     <div className={items.length > 0 ? 'pb-20' : ''}>
@@ -122,7 +133,7 @@ function MenuContent() {
         >
           🍽️ Todos
         </button>
-        {CATEGORIES.map(cat => (
+        {categorias.map(cat => (
           <button
             key={cat.id}
             onClick={() => setActiveCategory(cat.id)}
@@ -132,16 +143,18 @@ function MenuContent() {
                 : 'bg-gray-100 text-gray-600 hover:bg-brand-surface hover:text-brand-primary-dark'
             }`}
           >
-            {cat.emoji} {cat.label}
+            {cat.nombre}
           </button>
         ))}
       </div>
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {showSalads && <SaladConfigurator />}
-        {filteredProducts.map(product => (
-          <ProductCard key={product.id} product={product} />
+        {showSalads && (
+          <SaladConfigurator tamanos={tamanos} toppings={toppings} aderezos={aderezos} />
+        )}
+        {filteredProducts.map(producto => (
+          <ProductCard key={producto.id} producto={producto} />
         ))}
       </div>
 
@@ -161,10 +174,10 @@ function MenuContent() {
   )
 }
 
-export function MenuClient() {
+export function MenuClient(props: MenuClientProps) {
   return (
     <CartProvider>
-      <MenuContent />
+      <MenuContent {...props} />
       <CartBar />
       <FloatingButtonGuard />
     </CartProvider>

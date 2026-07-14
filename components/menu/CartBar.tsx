@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useCart } from '@/components/menu/CartContext'
 import { buildWhatsAppUrl } from '@/lib/whatsapp'
 import { formatPrice } from '@/lib/utils'
+import { createPedido } from '@/lib/data/createPedido'
 
 const WA_ICON = (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 shrink-0" aria-hidden="true">
@@ -26,10 +27,28 @@ function buildOrderMessage(items: ReturnType<typeof useCart>['items'], total: nu
 export function CartBar() {
   const { items, removeItem, clearCart, total } = useCart()
   const [expanded, setExpanded] = useState(false)
+  const [sending, setSending] = useState(false)
 
   if (items.length === 0) return null
 
   const whatsappUrl = buildWhatsAppUrl(buildOrderMessage(items, total))
+
+  async function handleEnviarPedido() {
+    setSending(true)
+    try {
+      await createPedido({
+        origen: 'whatsapp',
+        estado: 'pendiente',
+        items: items as unknown as Parameters<typeof createPedido>[0]['items'],
+        total,
+      })
+    } catch {
+      // Si falla el guardado, abrimos WhatsApp de todas formas
+    } finally {
+      setSending(false)
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
+    }
+  }
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 shadow-2xl">
@@ -101,15 +120,14 @@ export function CartBar() {
           </span>
         </button>
 
-        <a
-          href={whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-brand-primary-dark font-semibold text-sm hover:bg-brand-surface shadow-md transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+        <button
+          onClick={handleEnviarPedido}
+          disabled={sending}
+          className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-brand-primary-dark font-semibold text-sm hover:bg-brand-surface shadow-md transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:opacity-70 disabled:cursor-wait"
         >
           {WA_ICON}
-          <span>Enviar pedido</span>
-        </a>
+          <span>{sending ? 'Un momento…' : 'Enviar pedido'}</span>
+        </button>
       </div>
     </div>
   )

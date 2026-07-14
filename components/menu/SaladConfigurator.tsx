@@ -1,41 +1,56 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { SALAD_SIZES, SALAD_TOPPINGS, SALAD_DRESSINGS, SALAD_SPECIAL_TOPPINGS } from '@/lib/data'
 import { formatPrice } from '@/lib/utils'
 import { useCart } from '@/components/menu/CartContext'
+import type { TamanoEnsalada, Topping, Aderezo } from '@/lib/data/configurador'
 
-export function SaladConfigurator() {
+interface Props {
+  tamanos: TamanoEnsalada[]
+  toppings: Topping[]
+  aderezos: Aderezo[]
+}
+
+const SIZE_PHOTOS = [
+  { photo: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=100&q=80', size: 'w-10 h-10', badge: null },
+  { photo: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=100&q=80', size: 'w-14 h-14', badge: 'Más popular' },
+  { photo: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=100&q=80', size: 'w-16 h-16', badge: null },
+]
+
+export function SaladConfigurator({ tamanos, toppings, aderezos }: Props) {
   const { addItem } = useCart()
   const [selectedSizeId, setSelectedSizeId] = useState<string | null>(null)
   const [selectedToppings, setSelectedToppings] = useState<string[]>([])
-  const [selectedDressing, setSelectedDressing] = useState<string | null>(null)
+  const [selectedAderezo, setSelectedAderezo] = useState<string | null>(null)
   const [selectedSpecials, setSelectedSpecials] = useState<string[]>([])
   const [justAdded, setJustAdded] = useState(false)
 
-  const size = SALAD_SIZES.find(s => s.id === selectedSizeId) ?? null
+  const toppingsBase = toppings.filter(t => t.tipo === 'base')
+  const toppingsEspeciales = toppings.filter(t => t.tipo === 'especial')
+
+  const size = tamanos.find(s => s.id === selectedSizeId) ?? null
 
   const specialCost = selectedSpecials.reduce((sum, id) => {
-    const s = SALAD_SPECIAL_TOPPINGS.find(sp => sp.id === id)
-    return sum + (s?.price ?? 0)
+    const sp = toppingsEspeciales.find(t => t.id === id)
+    return sum + (sp?.precio_extra ?? 0)
   }, 0)
-  const total = (size?.price ?? 0) + specialCost
+  const total = (size?.precio ?? 0) + specialCost
 
   function handleSizeChange(id: string) {
-    const newSize = SALAD_SIZES.find(s => s.id === id)!
+    const newSize = tamanos.find(s => s.id === id)!
     setSelectedSizeId(id)
-    if (selectedToppings.length > newSize.maxToppings) {
-      setSelectedToppings(prev => prev.slice(0, newSize.maxToppings))
+    if (selectedToppings.length > newSize.max_toppings) {
+      setSelectedToppings(prev => prev.slice(0, newSize.max_toppings))
     }
   }
 
-  function toggleTopping(topping: string) {
+  function toggleTopping(nombre: string) {
     if (!size) return
     setSelectedToppings(prev => {
-      if (prev.includes(topping)) return prev.filter(t => t !== topping)
-      if (prev.length >= size.maxToppings) return prev
-      return [...prev, topping]
+      if (prev.includes(nombre)) return prev.filter(t => t !== nombre)
+      if (prev.length >= size.max_toppings) return prev
+      return [...prev, nombre]
     })
   }
 
@@ -48,11 +63,11 @@ export function SaladConfigurator() {
   function buildDetail(): string {
     const lines: string[] = []
     if (selectedToppings.length > 0) lines.push(`Toppings: ${selectedToppings.join(', ')}`)
-    if (selectedDressing) lines.push(`Aderezo: ${selectedDressing}`)
+    if (selectedAderezo) lines.push(`Aderezo: ${selectedAderezo}`)
     if (selectedSpecials.length > 0) {
       const text = selectedSpecials.map(id => {
-        const sp = SALAD_SPECIAL_TOPPINGS.find(s => s.id === id)!
-        return `${sp.label} (+${formatPrice(sp.price)})`
+        const sp = toppingsEspeciales.find(t => t.id === id)!
+        return `${sp.nombre} (+${formatPrice(sp.precio_extra)})`
       }).join(', ')
       lines.push(`Extras: ${text}`)
     }
@@ -62,13 +77,13 @@ export function SaladConfigurator() {
   function handleAddToCart() {
     if (!size) return
     addItem({
-      name: `Ensalada ${size.label}`,
+      name: `Ensalada ${size.nombre}`,
       price: total,
       detail: buildDetail(),
     })
     setSelectedSizeId(null)
     setSelectedToppings([])
-    setSelectedDressing(null)
+    setSelectedAderezo(null)
     setSelectedSpecials([])
     setJustAdded(true)
     setTimeout(() => setJustAdded(false), 1800)
@@ -92,14 +107,9 @@ export function SaladConfigurator() {
             1. Elige el tamaño
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            {SALAD_SIZES.map((s, i) => {
+            {tamanos.map((s, i) => {
               const active = selectedSizeId === s.id
-              const configs = [
-                { photo: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=100&q=80', size: 'w-10 h-10', badge: null },
-                { photo: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=100&q=80', size: 'w-14 h-14', badge: 'Más popular' },
-                { photo: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=100&q=80', size: 'w-16 h-16', badge: null },
-              ]
-              const cfg = configs[i]
+              const cfg = SIZE_PHOTOS[i] ?? SIZE_PHOTOS[0]
               return (
                 <button
                   key={s.id}
@@ -115,30 +125,24 @@ export function SaladConfigurator() {
                       {cfg.badge}
                     </span>
                   )}
-
-                  {/* Bowl visual */}
                   <div className={`shrink-0 rounded-full overflow-hidden shadow-md ring-2 ${active ? 'ring-green-400' : 'ring-gray-100'} transition-all ${cfg.size}`}>
                     <Image
                       src={cfg.photo}
-                      alt={`Ensalada ${s.label}`}
+                      alt={`Ensalada ${s.nombre}`}
                       width={64}
                       height={64}
                       className="w-full h-full object-cover"
                     />
                   </div>
-
-                  {/* Info */}
                   <div className="flex-1 min-w-0">
                     <p className={`font-bold text-base ${active ? 'text-brand-primary-dark' : 'text-gray-800'}`}>
-                      {s.label}
+                      {s.nombre}
                     </p>
-                    <p className="text-xs text-gray-400 mt-0.5">hasta {s.maxToppings} toppings</p>
+                    <p className="text-xs text-gray-400 mt-0.5">hasta {s.max_toppings} toppings</p>
                   </div>
-
-                  {/* Price + check */}
                   <div className="shrink-0 flex flex-col items-end gap-1">
                     <span className={`text-xl font-extrabold ${active ? 'text-brand-primary' : 'text-gray-700'}`}>
-                      {formatPrice(s.price)}
+                      {formatPrice(s.precio)}
                     </span>
                     <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
                       active ? 'bg-brand-primary-light border-brand-primary-light' : 'border-gray-300'
@@ -164,21 +168,21 @@ export function SaladConfigurator() {
                 2. Toppings incluidos
               </p>
               <span className={`text-xs font-semibold px-2.5 py-1 rounded-full transition-colors ${
-                selectedToppings.length >= size.maxToppings
+                selectedToppings.length >= size.max_toppings
                   ? 'bg-brand-surface-mid text-brand-primary-dark'
                   : 'bg-gray-100 text-gray-500'
               }`}>
-                {selectedToppings.length}/{size.maxToppings}
+                {selectedToppings.length}/{size.max_toppings}
               </span>
             </div>
             <div className="flex flex-wrap gap-2">
-              {SALAD_TOPPINGS.map(topping => {
-                const selected = selectedToppings.includes(topping)
-                const disabled = !selected && selectedToppings.length >= size.maxToppings
+              {toppingsBase.map(topping => {
+                const selected = selectedToppings.includes(topping.nombre)
+                const disabled = !selected && selectedToppings.length >= size.max_toppings
                 return (
                   <button
-                    key={topping}
-                    onClick={() => toggleTopping(topping)}
+                    key={topping.id}
+                    onClick={() => toggleTopping(topping.nombre)}
                     disabled={disabled}
                     className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-light ${
                       selected
@@ -188,7 +192,7 @@ export function SaladConfigurator() {
                         : 'bg-gray-100 text-gray-600 hover:bg-brand-surface-mid hover:text-brand-primary-dark'
                     }`}
                   >
-                    {topping}
+                    {topping.nombre}
                   </button>
                 )
               })}
@@ -203,19 +207,19 @@ export function SaladConfigurator() {
               3. Elige tu aderezo
             </p>
             <div className="flex flex-wrap gap-2">
-              {SALAD_DRESSINGS.map(dressing => {
-                const active = selectedDressing === dressing
+              {aderezos.map(aderezo => {
+                const active = selectedAderezo === aderezo.nombre
                 return (
                   <button
-                    key={dressing}
-                    onClick={() => setSelectedDressing(active ? null : dressing)}
+                    key={aderezo.id}
+                    onClick={() => setSelectedAderezo(active ? null : aderezo.nombre)}
                     className={`px-4 py-2 rounded-full text-sm font-medium border transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-light ${
                       active
                         ? 'bg-brand-primary border-brand-primary text-white shadow-sm'
                         : 'bg-white border-gray-200 text-gray-600 hover:border-brand-primary-subtle hover:text-brand-primary-dark'
                     }`}
                   >
-                    {dressing}
+                    {aderezo.nombre}
                   </button>
                 )
               })}
@@ -233,7 +237,7 @@ export function SaladConfigurator() {
               <span className="text-xs text-gray-400">(costo adicional)</span>
             </div>
             <div className="flex flex-wrap gap-2">
-              {SALAD_SPECIAL_TOPPINGS.map(sp => {
+              {toppingsEspeciales.map(sp => {
                 const selected = selectedSpecials.includes(sp.id)
                 return (
                   <button
@@ -245,9 +249,9 @@ export function SaladConfigurator() {
                         : 'bg-brand-accent-surface border-brand-accent-border text-brand-accent-text hover:bg-brand-accent-surface'
                     }`}
                   >
-                    {sp.label}
+                    {sp.nombre}
                     <span className={`text-xs font-bold ${selected ? 'text-brand-accent-surface' : 'text-brand-accent-dark'}`}>
-                      +{formatPrice(sp.price)}
+                      +{formatPrice(sp.precio_extra)}
                     </span>
                   </button>
                 )
@@ -265,7 +269,6 @@ export function SaladConfigurator() {
           ) : (
             <p className="text-sm text-gray-400">Selecciona un tamaño para comenzar</p>
           )}
-
           <div className="flex items-center gap-3">
             {size && (
               <div className="text-right">

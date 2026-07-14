@@ -1,7 +1,10 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { MenuClient } from '@/components/menu/MenuClient'
 import { BUSINESS_INFO } from '@/lib/data'
+import { getCategorias } from '@/lib/data/categorias'
+import { getProductos } from '@/lib/data/productos'
+import { getTamanos, getToppings, getAderezos } from '@/lib/data/configurador'
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://barra-fresh-web.vercel.app'
 
@@ -50,7 +53,15 @@ const jsonLd = {
   hasMenu: `${BASE_URL}/menu`,
 }
 
-export default function MenuPage() {
+export default async function MenuPage() {
+  const [categorias, productos, tamanos, toppings, aderezos] = await Promise.all([
+    getCategorias(),
+    getProductos(),
+    getTamanos(),
+    getToppings(),
+    getAderezos(),
+  ])
+
   return (
     <>
       <script
@@ -83,7 +94,6 @@ export default function MenuPage() {
       <main>
         <section className="py-10 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Page heading */}
             <div className="text-center mb-10">
               <span className="inline-block px-4 py-1.5 rounded-full bg-brand-surface-mid text-brand-primary-dark text-sm font-semibold mb-4">
                 Menú Digital
@@ -98,11 +108,16 @@ export default function MenuPage() {
               </p>
             </div>
 
-            <MenuClient />
+            <MenuClient
+              productos={productos}
+              categorias={categorias}
+              tamanos={tamanos}
+              toppings={toppings}
+              aderezos={aderezos}
+            />
           </div>
         </section>
       </main>
-
     </>
   )
 }
