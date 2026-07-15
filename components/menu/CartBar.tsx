@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useCart } from '@/components/menu/CartContext'
 import { buildWhatsAppUrl } from '@/lib/whatsapp'
 import { formatPrice } from '@/lib/utils'
-import { createPedido } from '@/lib/data/createPedido'
+import { crearPedidoWhatsapp } from '@/app/actions/pedidos'
 
 const WA_ICON = (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 shrink-0" aria-hidden="true">
@@ -36,10 +36,10 @@ export function CartBar() {
   async function handleEnviarPedido() {
     setSending(true)
     try {
-      await createPedido({
+      await crearPedidoWhatsapp({
         origen: 'whatsapp',
         estado: 'pendiente',
-        items: items as unknown as Parameters<typeof createPedido>[0]['items'],
+        items: items as unknown as Parameters<typeof crearPedidoWhatsapp>[0]['items'],
         total,
       })
     } catch {
