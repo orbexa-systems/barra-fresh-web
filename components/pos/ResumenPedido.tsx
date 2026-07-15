@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { ItemPedido } from './ItemPedido'
-import { createPedido } from '@/lib/data/createPedido'
+import { crearPedidoPOS } from '@/app/pos/actions'
 import type { CartItem } from '@/app/pos/POSClient'
 import type { Json } from '@/types/database'
 
@@ -53,7 +53,7 @@ export function ResumenPedido({
         subtotal: i.precio * i.cantidad,
       }))
 
-      const pedido = await createPedido({
+      const pedido = await crearPedidoPOS({
         origen: 'pos',
         estado: 'confirmado',
         items: items as unknown as Json,
