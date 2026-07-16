@@ -7,7 +7,11 @@ import type { Database } from '@/types/database'
 
 type ProductoUpdate = Database['public']['Tables']['productos']['Update']
 
-const REVALIDATE = () => revalidatePath('/admin/menu')
+const REVALIDATE = () => {
+  revalidatePath('/admin/menu')
+  revalidatePath('/')
+  revalidatePath('/menu')
+}
 
 // ─── Productos ───────────────────────────────────────────────
 
