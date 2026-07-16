@@ -16,21 +16,39 @@ const REVALIDATE = () => {
 // ─── Productos ───────────────────────────────────────────────
 
 export async function toggleDisponible(id: string, value: boolean) {
-  const supabase = await createServerSupabaseClient()
-  await supabase.from('productos').update({ disponible: value }).eq('id', id)
-  REVALIDATE()
+  try {
+    const supabase = await createServerSupabaseClient()
+    const { error } = await supabase.from('productos').update({ disponible: value }).eq('id', id)
+    if (error) throw error
+  } catch (e) {
+    console.error('toggleDisponible:', e)
+  } finally {
+    REVALIDATE()
+  }
 }
 
 export async function toggleDestacado(id: string, value: boolean) {
-  const supabase = await createServerSupabaseClient()
-  await supabase.from('productos').update({ destacado: value }).eq('id', id)
-  REVALIDATE()
+  try {
+    const supabase = await createServerSupabaseClient()
+    const { error } = await supabase.from('productos').update({ destacado: value }).eq('id', id)
+    if (error) throw error
+  } catch (e) {
+    console.error('toggleDestacado:', e)
+  } finally {
+    REVALIDATE()
+  }
 }
 
 export async function deleteProducto(id: string) {
-  const supabase = await createServerSupabaseClient()
-  await supabase.from('productos').delete().eq('id', id)
-  REVALIDATE()
+  try {
+    const supabase = await createServerSupabaseClient()
+    const { error } = await supabase.from('productos').delete().eq('id', id)
+    if (error) throw error
+  } catch (e) {
+    console.error('deleteProducto:', e)
+  } finally {
+    REVALIDATE()
+  }
 }
 
 async function uploadImagen(file: File): Promise<string | null> {
@@ -61,7 +79,7 @@ export async function createProducto(formData: FormData) {
     orden: Number(formData.get('orden') ?? 0),
   })
 
-  if (error) throw new Error(error.message)
+  if (error) throw new Error('No se pudo crear el producto. Intenta de nuevo.')
   REVALIDATE()
 }
 
@@ -87,7 +105,7 @@ export async function updateProducto(id: string, formData: FormData) {
   }
 
   const { error } = await supabase.from('productos').update(update).eq('id', id)
-  if (error) throw new Error(error.message)
+  if (error) throw new Error('No se pudo actualizar el producto. Intenta de nuevo.')
   REVALIDATE()
 }
 
