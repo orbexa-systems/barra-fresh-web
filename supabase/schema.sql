@@ -90,21 +90,21 @@ alter table public.toppings         enable row level security;
 alter table public.aderezos         enable row level security;
 alter table public.pedidos          enable row level security;
 
--- Lectura pública (menú y configurador)
+-- Lectura pública (menú y configurador) — solo registros activos/disponibles
 create policy "lectura publica categorias"
-  on public.categorias for select using (true);
+  on public.categorias for select using (activo = true);
 
 create policy "lectura publica productos"
-  on public.productos for select using (true);
+  on public.productos for select using (disponible = true);
 
 create policy "lectura publica tamanos"
-  on public.tamanos_ensalada for select using (true);
+  on public.tamanos_ensalada for select using (activo = true);
 
 create policy "lectura publica toppings"
-  on public.toppings for select using (true);
+  on public.toppings for select using (disponible = true);
 
 create policy "lectura publica aderezos"
-  on public.aderezos for select using (true);
+  on public.aderezos for select using (disponible = true);
 
 -- Escritura solo autenticados (admin y POS)
 create policy "escritura autenticados categorias"
@@ -123,12 +123,9 @@ create policy "escritura autenticados aderezos"
   on public.aderezos for all using (auth.role() = 'authenticated');
 
 -- Pedidos: solo autenticados pueden leer y escribir
+-- INSERT desde sitio público va por Server Actions con service role key (bypasea RLS)
 create policy "pedidos solo autenticados"
   on public.pedidos for all using (auth.role() = 'authenticated');
-
--- Insertar pedidos desde el sitio público (whatsapp) sin autenticación
-create policy "insertar pedido publico"
-  on public.pedidos for insert with check (true);
 
 -- ============================================================
 -- SEED DATA — Categorías
