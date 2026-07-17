@@ -53,6 +53,8 @@ const jsonLd = {
   hasMenu: `${BASE_URL}/menu`,
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function MenuPage() {
   const [categorias, productos, tamanos, toppings, aderezos] = await Promise.all([
     getCategorias(),

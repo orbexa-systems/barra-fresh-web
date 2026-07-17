@@ -10,6 +10,8 @@ import { LocationSection } from '@/components/sections/LocationSection'
 import { OrderSection } from '@/components/sections/OrderSection'
 import { WhatsAppFloatingButton } from '@/components/ui/WhatsAppButton'
 
+export const dynamic = 'force-dynamic'
+
 function MenuSectionSkeleton() {
   return (
     <section className="py-16 bg-brand-surface/30">

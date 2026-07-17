@@ -3,7 +3,11 @@
 import { revalidatePath } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 
-const REVALIDATE = () => revalidatePath('/admin/configurador')
+const REVALIDATE = () => {
+  revalidatePath('/admin/configurador')
+  revalidatePath('/')
+  revalidatePath('/menu')
+}
 
 // ─── Tamaños ─────────────────────────────────────────────────
 
