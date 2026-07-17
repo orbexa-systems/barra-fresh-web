@@ -9,6 +9,14 @@ export function createBrowserSupabaseClient() {
   )
 }
 
+// Cliente público — para Server Components cacheables (no llama cookies())
+export function createPublicClient() {
+  return createClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
+
 // Cliente admin — bypasea RLS (solo usar en Server Actions o Route Handlers)
 export function createServiceClient() {
   return createClient<Database>(

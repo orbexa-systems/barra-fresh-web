@@ -53,22 +53,33 @@ export function ResumenPedido({
         subtotal: i.precio * i.cantidad,
       }))
 
-      const pedido = await crearPedidoPOS({
-        origen: 'pos',
-        estado: 'confirmado',
-        items: items as unknown as Json,
-        total,
-        nombre_cliente: nombreCliente || null,
-        notas: notas || null,
-      })
+      const timeout = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('timeout')), 10_000)
+      )
+
+      const pedido = await Promise.race([
+        crearPedidoPOS({
+          origen: 'pos',
+          estado: 'confirmado',
+          items: items as unknown as Json,
+          total,
+          nombre_cliente: nombreCliente || null,
+          notas: notas || null,
+        }),
+        timeout,
+      ])
 
       if (!pedido) {
         setError('No se pudo guardar el pedido. Intenta de nuevo.')
         return
       }
       onPedidoConfirmado(pedido.id)
-    } catch {
-      setError('Error al confirmar el pedido. Intenta de nuevo.')
+    } catch (e) {
+      if (e instanceof Error && e.message === 'timeout') {
+        setError('El servidor tardó demasiado. Verifica tu conexión e intenta de nuevo.')
+      } else {
+        setError('Error al confirmar el pedido. Intenta de nuevo.')
+      }
     } finally {
       setLoading(false)
     }

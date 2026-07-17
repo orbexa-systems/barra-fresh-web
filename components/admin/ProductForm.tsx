@@ -1,10 +1,11 @@
 'use client'
 
-import { useActionState, useRef, useState } from 'react'
+import { useActionState, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { Categoria } from '@/lib/data/categorias'
 import type { Producto } from '@/lib/data/productos'
+import { useToast } from '@/components/shared/Toast'
 
 interface Props {
   categorias: Categoria[]
@@ -15,6 +16,7 @@ interface Props {
 type State = { error: string | null }
 
 export function ProductForm({ categorias, producto, action }: Props) {
+  const { showToast } = useToast()
   const [state, formAction, pending] = useActionState<State, FormData>(
     async (_prev, formData) => {
       try {
@@ -26,6 +28,14 @@ export function ProductForm({ categorias, producto, action }: Props) {
     },
     { error: null }
   )
+
+  const prevPendingRef = useRef(false)
+  useEffect(() => {
+    if (prevPendingRef.current && !pending && !state.error) {
+      showToast('Producto guardado correctamente', 'success')
+    }
+    prevPendingRef.current = pending
+  }, [pending, state.error, showToast])
 
   const fileRef = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string | null>(producto?.imagen_url ?? null)
