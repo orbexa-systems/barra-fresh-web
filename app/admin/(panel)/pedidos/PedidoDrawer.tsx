@@ -4,6 +4,7 @@ import { useEffect, useTransition } from 'react'
 import { cambiarEstadoPedido } from './actions'
 import type { Pedido, EstadoPedido } from '@/lib/data/pedidos'
 import type { Json } from '@/types/database'
+import { useToast } from '@/components/shared/Toast'
 
 const ESTADOS: { value: EstadoPedido; label: string; color: string; bg: string }[] = [
   { value: 'pendiente',  label: 'Pendiente',  color: 'text-amber-700',  bg: 'bg-amber-50 border-amber-200 hover:bg-amber-100' },
@@ -37,6 +38,7 @@ interface Props {
 
 export function PedidoDrawer({ pedido, onClose }: Props) {
   const [pending, startTransition] = useTransition()
+  const { showToast } = useToast()
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) { if (e.key === 'Escape') onClose() }
@@ -51,7 +53,14 @@ export function PedidoDrawer({ pedido, onClose }: Props) {
 
   function handleEstado(estado: EstadoPedido) {
     if (estado === pedido!.estado) return
-    startTransition(() => cambiarEstadoPedido(pedido!.id, estado))
+    startTransition(async () => {
+      const result = await cambiarEstadoPedido(pedido!.id, estado)
+      if (result.success) {
+        showToast('Estado del pedido actualizado', 'success')
+      } else {
+        showToast(result.error ?? 'Error al actualizar el estado', 'error')
+      }
+    })
   }
 
   return (
