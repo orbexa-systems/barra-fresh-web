@@ -2,6 +2,10 @@ import type { NextConfig } from 'next'
 
 const PROD_DOMAIN = 'barrafresh.mx'
 
+const supabaseHostname = process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
+  : 'iremfjztrywvugmsyyjd.supabase.co'
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -12,7 +16,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'intsxzquxoyvjgmqgjqy.supabase.co',
+        hostname: supabaseHostname,
         pathname: '/storage/v1/object/public/**',
       },
     ],
